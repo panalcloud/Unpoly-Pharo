@@ -11,7 +11,9 @@ WATagBrush >> asUpTarget [
 { #category : '*Unpoly-Core' }
 WATagBrush >> beUpTarget [
 
-	"an id is required"
+	"Assign an ID so this element can be used as an Unpoly target.
+	Note the ID must remain the same on each rendering so this method is only suitable where layout is static (same elements encountered in same order).
+	Where this is not the case you should assign a constant ID manually or use a non-ambiguous .class attribute"
 
 	self ensureId
 ]
@@ -224,8 +226,12 @@ WATagBrush >> upSubmit: aBoolean [
 { #category : '*Unpoly-Core' }
 WATagBrush >> upTarget: anObject [
 
-	"anObject may be a String denoting an html id/class/element with the appropriate prefix (# / . / :)
-	or a previously-rendered Tag object"
+	"anObject may be a String denoting an id or css class (or space-separated collection there of) 
+	with the appropriate prefix (# or  .) or a previously-rendered Tag object with an assigned ID.
+	Note that we do not support ambiguous targets so a class target must be unique in the page.
+	For the same reason we do not support targetting by tag since this are highly likely to be ambiguous.
+	Ambiguous targets are automatically changed to :main on load.
+	See https://unpoly.com/targeting-fragments#ambiguous-selectors"
 
 	self attributeAt: 'up-target' put: anObject asUpTarget
 ]

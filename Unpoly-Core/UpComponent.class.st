@@ -127,3 +127,11 @@ UpComponent >> states [
 
 	^{self session currentLayerState}
 ]
+
+{ #category : 'updating' }
+UpComponent >> updateRoot: htmlRoot [
+	"Responsive by default"
+
+	super updateRoot: htmlRoot.
+	htmlRoot beResponsive
+]

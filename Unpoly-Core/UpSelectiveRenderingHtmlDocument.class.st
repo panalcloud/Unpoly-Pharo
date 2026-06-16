@@ -132,15 +132,15 @@ UpSelectiveRenderingHtmlDocument >> parseReloadHeader [
 
 	| reloadHeader readStream |
 
-	reloadHeader := self requestContext request headerAt: 'x-up-target'.
+	reloadHeader := self requestContext request upTarget.
 	readStream := reloadHeader readStream.
 
 	[readStream atEnd] whileFalse: 
 		[| next |
 		next := readStream upTo: $,.
 		next first = $. 
-			ifTrue: [classesToRender := (classesToRender ifNil: [#()]), {next allButFirst}]
-			ifFalse: [next first = $# ifTrue: [idsToRender := (idsToRender ifNil: [#()]), {next allButFirst}]].
+			ifTrue: [self _addClassToRender: next allButFirst]
+			ifFalse: [next first = $# ifTrue: [self _addIdToRender: next allButFirst]].
 		readStream skipSeparators]
 ]
 
@@ -162,7 +162,7 @@ UpSelectiveRenderingHtmlDocument >> shouldRenderAttributes: anAttributes [
 		[(anAttributes at: 'class' ifAbsent: [nil]) ifNotNil: 
 			[ :cls | 
 			(cls isConcatenatedHtmlAttributeValue
-				ifTrue: [classesToRender anySatisfy: [ :each | cls includes: each]]
+				ifTrue: [(cls includes: 'placeholder') not and: [classesToRender anySatisfy: [ :each | cls includes: each]]]
 				ifFalse: [classesToRender includes: cls]) ifTrue: [^true]]].
 
 	idsToRender notNil ifTrue: 
